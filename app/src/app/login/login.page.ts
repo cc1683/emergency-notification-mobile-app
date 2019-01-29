@@ -19,12 +19,14 @@ export class LoginPage implements OnInit {
 
   //! Login function
   async login() {
-    // const { username, password } = this;
-    // try {
-    //   const res = this.afAuth.auth.signInWithEmailAndPassword(username, password)
-    // } catch(err) {
-    //   console.dir(err);
-    // }
+    const { username, password } = this;
+    try {
+      this.afAuth.auth.signInWithEmailAndPassword(username, password).then(cred => {
+        console.log('login successfully')
+      })
+    } catch(err) {
+      console.dir(err);
+    }
   }
 
 }
