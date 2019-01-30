@@ -52,7 +52,7 @@ export class RegisterPage implements OnInit {
 
         this.afStore.collection('users').doc(userId).set(user);
         this.showAlert("Success!", "Welcome onboard!");
-        this.router.navigate(['/login']);
+        this.router.navigate(['/tabs']);
       });
 
     } catch(err) {
