@@ -64,8 +64,16 @@ export class RegisterPage implements OnInit {
         uid: res.user.uid
       })
 
-      this.showAlert("Success!", "Welcome onboard!");
-      this.router.navigate(['/tabs']);
+      
+      if(res.user) {
+        this.user.setUser({
+          username,
+          uid: res.user.uid
+        })
+        
+        this.showAlert("Success!", "Welcome onboard!");
+        this.router.navigate(['/tabs']);
+      }
 
     } catch(err) {
       this.showAlert("Error!", err.message);
