@@ -40,23 +40,6 @@ export class RegisterPage implements OnInit {
     }
 
     try {
-      // this.afAuth.auth.createUserWithEmailAndPassword(username, password).then(cred => {
-      //   const userId = cred.user.uid;
-      //   const email = cred.user.email;
-      //   const displayName = cred.user.displayName;
-
-        // const user = {
-        //   userid: userId,
-        //   useremail: email,
-        //   userfullname: fullname,
-        //   usermremarks: mremarks
-        // }
-
-      //   this.afStore.collection('users').doc(userId).set(user);
-      //   this.showAlert("Success!", "Welcome onboard!");
-      //   this.router.navigate(['/tabs']);
-      // });
-
       const res = await this.afAuth.auth.createUserWithEmailAndPassword(username, password)
 
       this.afStore.doc(`users/${res.user.uid}`).set({
@@ -64,7 +47,6 @@ export class RegisterPage implements OnInit {
         uid: res.user.uid
       })
 
-      
       if(res.user) {
         this.user.setUser({
           username,
@@ -88,6 +70,10 @@ export class RegisterPage implements OnInit {
     })  
 
     await alert.present();
+  }
+
+  goLogin() {
+    this.router.navigate(['/login']);
   }
 
 }

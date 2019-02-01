@@ -13,14 +13,17 @@ export class ProfilePage implements OnInit {
   fullname: string
   mremarks: string
   userID: string
+  userData
 
-  constructor(public afStore: AngularFirestore, public user: UserService, public afAuth: AngularFireAuth) { }
+  constructor(public afStore: AngularFirestore, public user: UserService, public afAuth: AngularFireAuth) {
+    const data = afStore.doc(`users/${user.getUid()}`)
+    this.userData = data.valueChanges()
+  }
 
   ngOnInit() {
   }
 
   updateProfile() {
-
     this.afStore.doc(`users/${this.user.getUid()}`).update({
       fullname: this.fullname,
       medicalremarks: this.mremarks
