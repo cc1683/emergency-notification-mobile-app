@@ -16,6 +16,8 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { UserService } from './user.service';
 
+import { AgmCoreModule } from '@agm/core';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,6 +29,9 @@ import { UserService } from './user.service';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule,
+    AgmCoreModule.forRoot({
+      apiKey: environment.googleMapsKey
+    })
   ],
   providers: [
     StatusBar,

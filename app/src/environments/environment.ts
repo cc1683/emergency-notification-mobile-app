@@ -11,8 +11,11 @@ export const environment = {
     projectId: "emergency-notification-app",
     storageBucket: "emergency-notification-app.appspot.com",
     messagingSenderId: "271421108213"
-  }
+  },
+  googleMapsKey: 'AIzaSyDebSrk3Y2DLXiqAgvEKl4HoqjOsBjXkxo'
 };
+
+
 
 /*
  * For easier debugging in development mode, you can import the following file
