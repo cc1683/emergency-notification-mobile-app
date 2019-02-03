@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +12,7 @@ export class HomePage implements OnInit {
   lat: number
   lng: number
 
-  constructor() { }
+  constructor(public afStore: AngularFirestore, public user: UserService) { }
 
   ngOnInit() {
     this.getUserLocation()
@@ -23,5 +25,12 @@ export class HomePage implements OnInit {
         this.lng = position.coords.longitude
       })
     }
+  }
+
+  updateLocation() {
+    this.afStore.doc(`users/${this.user.getUid()}`).update({
+      latitude: this.lat,
+      longitude: this.lng
+    })
   }
 }
