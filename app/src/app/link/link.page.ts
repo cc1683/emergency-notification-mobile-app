@@ -12,7 +12,7 @@ import { firestore } from 'firebase';
 export class LinkPage implements OnInit {
 
   emailsCollection: AngularFirestoreCollection<any>
-  emails: Array<any> = []
+  details: Array<any> = []
   linkUserEmail: string
 
   constructor(public afAuth: AngularFireAuth, public afStore: AngularFirestore, public user: UserService) { 
@@ -20,7 +20,12 @@ export class LinkPage implements OnInit {
     this.emailsCollection.snapshotChanges().forEach(a => {
       a.forEach(item => {
         const useremail = item.payload.doc.data().username
-        this.emails.push(useremail)
+        const useruid = item.payload.doc.data().uid
+        const userdata = {
+          useremail: useremail,
+          useruid: useruid
+        }
+        this.details.push(userdata)
       })
     })
   }
@@ -29,11 +34,13 @@ export class LinkPage implements OnInit {
   }
 
   linkUser(newInputEmail: string) {
-    for(let email of this.emails) {
-      if(newInputEmail === email) {
+    for(let detail of this.details) {
+      if(newInputEmail === detail.useremail) {
+        let newInputId = detail.useruid
         this.afStore.doc(`users/${this.user.getUid()}`).update({
           usersList: firestore.FieldValue.arrayUnion({
-            newInputEmail
+            newInputEmail,
+            newInputId
           })
         })
       } 
