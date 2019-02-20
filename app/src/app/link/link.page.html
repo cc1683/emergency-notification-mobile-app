@@ -5,5 +5,18 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-list>
+      <ion-item>
+          <ion-label position="floating">Enter user email</ion-label>
+          <ion-input type="text" [(ngModel)]="linkUserEmail"></ion-input>
+      </ion-item>
+    </ion-list>
 
+  <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button expand="full" fill="solid" color="dark" (click)="linkUser(linkUserEmail)">Link user</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
 </ion-content>
