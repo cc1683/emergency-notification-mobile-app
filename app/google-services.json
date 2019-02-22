@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "271421108213",
+    "firebase_url": "https://emergency-notification-app.firebaseio.com",
+    "project_id": "emergency-notification-app",
+    "storage_bucket": "emergency-notification-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271421108213:android:764d2cb7da3280eb",
+        "android_client_info": {
+          "package_name": "io.ionic.starter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "271421108213-uevaktdsv434q58pqgomeq280dund9vt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0alPF-njN_-Ax7pJH_vQ1d_TAH0uI0fQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

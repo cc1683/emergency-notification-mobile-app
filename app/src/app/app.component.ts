@@ -30,7 +30,9 @@ export class AppComponent {
   }
 
   initializeFirebaseAndroid() {
-    this.firebase.getToken().then(token => {});
+    this.firebase.getToken().then(token => {
+      console.log(token)
+    });
     this.firebase.onTokenRefresh().subscribe(token => {})
     this.subscribeToPushNotifications();
   }
