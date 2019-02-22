@@ -15,6 +15,7 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { UserService } from './user.service';
+import { Firebase } from '@ionic-native/firebase/ngx';
 
 import { AgmCoreModule } from '@agm/core';
 
@@ -31,13 +32,14 @@ import { AgmCoreModule } from '@agm/core';
     AngularFirestoreModule,
     AgmCoreModule.forRoot({
       apiKey: environment.googleMapsKey
-    })
+    }),
   ],
   providers: [
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    UserService
+    UserService,
+    Firebase
   ],
   bootstrap: [AppComponent]
 })
