@@ -21,9 +21,11 @@ export class LinkPage implements OnInit {
       a.forEach(item => {
         const useremail = item.payload.doc.data().username
         const useruid = item.payload.doc.data().uid
+        const usertoken = item.payload.doc.data().token
         const userdata = {
           useremail: useremail,
-          useruid: useruid
+          useruid: useruid,
+          usertoken: usertoken
         }
         this.details.push(userdata)
       })
@@ -37,10 +39,12 @@ export class LinkPage implements OnInit {
     for(let detail of this.details) {
       if(newInputEmail === detail.useremail) {
         let newInputId = detail.useruid
+        let newToken = detail.usertoken
         this.afStore.doc(`users/${this.user.getUid()}`).update({
           usersList: firestore.FieldValue.arrayUnion({
             newInputEmail,
-            newInputId
+            newInputId,
+            newToken
           })
         })
       } 

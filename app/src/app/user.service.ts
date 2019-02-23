@@ -32,4 +32,8 @@ export class UserService {
       return this.user.uid
     }
   }
+
+  getUsername() {
+      return this.user.username
+  }
 }

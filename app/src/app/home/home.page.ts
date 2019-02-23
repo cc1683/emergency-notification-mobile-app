@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { UserService } from '../user.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { Firebase } from '@ionic-native/firebase/ngx'
 import { ToastController, Platform } from '@ionic/angular';
+import { firestore } from 'firebase';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 
 @Component({
@@ -16,7 +20,10 @@ export class HomePage implements OnInit {
   lat: number
   lng: number
 
+  requestUserUid: string
+
   constructor(public afStore: AngularFirestore, 
+              public afAuth: AngularFireAuth,
               public user: UserService, 
               public geolocation: Geolocation,
               private firebase: Firebase,
@@ -30,6 +37,8 @@ export class HomePage implements OnInit {
       this.lat = postion.coords.latitude
       this.lng = postion.coords.longitude
     })
+
+    this.updateLocation()
 
     this.getToken()
   }
@@ -56,6 +65,30 @@ export class HomePage implements OnInit {
     })
   }
 
+  inDanger() {
+    this.afAuth.authState.subscribe(res => {
+      if(res && res.uid) {
+        this.requestUserUid = res.uid 
+
+        let emergencyMsg = {
+          sender: this.requestUserUid,
+          latitude: this.lat,
+          longitude: this.lng,
+          message: 'Hello World!'
+        }
+    
+        this.afStore.doc(`users/${this.user.getUid()}`).update({
+          trackList: firestore.FieldValue.arrayUnion({
+            emergencyMsg
+          })
+        })
+        
+      } else {
+        throw new Error("User not logged in")
+      }
+    })
+  }
+
   getToken() {
     this.platform.is("android") ? this.initializeFirebaseAndroid() : this.initializeFirebaseIOS()
   }
@@ -63,7 +96,7 @@ export class HomePage implements OnInit {
   initializeFirebaseAndroid() {
     this.firebase.getToken().then(token => {
       this.afStore.doc(`users/${this.user.getUid()}`).update({
-        deviceToken: token
+        token: token
       })
     });
     this.firebase.onTokenRefresh().subscribe(token => {})
