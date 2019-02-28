@@ -8,6 +8,7 @@ import { ToastController, Platform } from '@ionic/angular';
 import { firestore } from 'firebase';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { appendFileSync } from 'fs';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class HomePage implements OnInit {
   lng: number
 
   requestUserUid: string
+
 
   constructor(public afStore: AngularFirestore, 
               public afAuth: AngularFireAuth,
@@ -69,25 +71,48 @@ export class HomePage implements OnInit {
     this.afAuth.authState.subscribe(res => {
       if(res && res.uid) {
         this.requestUserUid = res.uid 
+        let name = this.getRequestUserDetails(this.requestUserUid)
 
         let emergencyMsg = {
-          sender: this.requestUserUid,
+          // sender: name,
           latitude: this.lat,
           longitude: this.lng,
           message: 'Hello World!'
         }
     
-        this.afStore.doc(`users/${this.user.getUid()}`).update({
-          trackList: firestore.FieldValue.arrayUnion({
-            emergencyMsg
-          })
+        // this.afStore.doc(`users/${this.user.getUid()}`).update({
+        //   trackList: firestore.FieldValue.arrayUnion({
+        //     emergencyMsg
+        //   })
+        // })
+
+        this.afStore.collection('users/' + this.user.getUid() + '/notification').add({
+          message: 'Help! I located at '+this.lat+' & '+this.lng,
+          sender: this.user.getUsername()
         })
-        
+
       } else {
         throw new Error("User not logged in")
       }
     })
   }
+
+  getRequestUserDetails(id: string): Observable<any> {
+    const userDetail = this.afStore.doc<any>('users/' +id)
+    return userDetail.snapshotChanges()
+      .pipe(
+        map(changes => {
+          const username = changes.payload.data().username
+          return username
+        })
+      )
+  }
+
+
+
+  //! -------------------- get the device token ------------------- //
+
+
 
   getToken() {
     this.platform.is("android") ? this.initializeFirebaseAndroid() : this.initializeFirebaseIOS()

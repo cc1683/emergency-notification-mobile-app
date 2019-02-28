@@ -42,8 +42,6 @@ export class LinkPage implements OnInit {
         let newToken = detail.usertoken
         this.afStore.doc(`users/${this.user.getUid()}`).update({
           usersList: firestore.FieldValue.arrayUnion({
-            newInputEmail,
-            newInputId,
             newToken
           })
         })

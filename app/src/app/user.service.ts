@@ -16,6 +16,8 @@ export class UserService {
     this.user = user
   }
 
+
+
   getUid() {
     if(!this.user) {
       if(this.afAuth.auth.currentUser) {
@@ -34,6 +36,6 @@ export class UserService {
   }
 
   getUsername() {
-      return this.user.username
+    return this.user.username
   }
 }
