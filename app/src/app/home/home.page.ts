@@ -40,31 +40,14 @@ export class HomePage implements OnInit {
               ) { }
 
   ngOnInit() {
-    // this.getUserLocation()
+    this.getToken()
     this.geolocation.getCurrentPosition().then((postion) => {
       this.lat = postion.coords.latitude
       this.lng = postion.coords.longitude
     })
 
     this.updateLocation()
-
-    this.getToken()
   }
-
-  // getUserLocation() {
-  //   let option = {
-  //     enableHighAccuracy: true,
-  //     timeout: 5000,
-  //     maximumAge: 0
-  //   }
-
-  //   if(navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(position => {
-  //       this.lat = position.coords.latitude
-  //       this.lng = position.coords.longitude
-  //     })
-  //   }
-  // }
 
   updateLocation() {
     this.afStore.doc(`users/${this.user.getUid()}`).update({
@@ -77,20 +60,6 @@ export class HomePage implements OnInit {
     this.afAuth.authState.subscribe(res => {
       if(res && res.uid) {
         this.requestUserUid = res.uid 
-        // let name = this.getRequestUserDetails(this.requestUserUid)
-
-        let emergencyMsg = {
-          // sender: name,
-          latitude: this.lat,
-          longitude: this.lng,
-          message: 'Hello World!'
-        }
-    
-        // this.afStore.doc(`users/${this.user.getUid()}`).update({
-        //   trackList: firestore.FieldValue.arrayUnion({
-        //     emergencyMsg
-        //   })
-        // })
 
         this.userListRef = this.afStore.doc(`users/${this.user.getUid()}`)
         this.userListRef.snapshotChanges().forEach(item => {
@@ -100,40 +69,20 @@ export class HomePage implements OnInit {
               let tokenId = item.payload.data().usersList[i].newToken
               this.tokenCollection.push(tokenId)
             }
+            this.afStore.collection('users/' + this.user.getUid() + '/notifications').add({
+              message: 'Help! I located at '+this.lat+' & '+this.lng,
+              sender: this.user.getUsername(),
+              receiver: this.tokenCollection
+            })
+
+            this.tokenCollection = []
           }
         })
-
-
-
-
-        this.afStore.collection('users/' + this.user.getUid() + '/notifications').add({
-          message: 'Help! I located at '+this.lat+' & '+this.lng,
-          sender: this.user.getUsername(),
-          receiver: this.tokenCollection
-        })
-
       } else {
         throw new Error("User not logged in")
       }
     })
   }
-
-  // getRequestUserDetails(id: string): Observable<any> {
-  //   const userDetail = this.afStore.doc<any>('users/' +id)
-  //   return userDetail.snapshotChanges()
-  //     .pipe(
-  //       map(changes => {
-  //         const username = changes.payload.data().username
-  //         return username
-  //       })
-  //     )
-  // }
-
-
-
-  //! -------------------- get the device token ------------------- //
-
-
 
   getToken() {
     this.platform.is("android") ? this.initializeFirebaseAndroid() : this.initializeFirebaseIOS()
