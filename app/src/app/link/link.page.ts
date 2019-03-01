@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { UserService } from '../user.service';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { firestore } from 'firebase';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-link',
@@ -15,7 +16,13 @@ export class LinkPage implements OnInit {
   details: Array<any> = []
   linkUserEmail: string
 
+  userData: Observable<any>
+
+
   constructor(public afAuth: AngularFireAuth, public afStore: AngularFirestore, public user: UserService) { 
+    const data = afStore.doc(`users/${user.getUid()}`)
+    this.userData = data.valueChanges()
+
     this.emailsCollection = this.afStore.collection('users')
     this.emailsCollection.snapshotChanges().forEach(a => {
       a.forEach(item => {
@@ -42,7 +49,9 @@ export class LinkPage implements OnInit {
         let newToken = detail.usertoken
         this.afStore.doc(`users/${this.user.getUid()}`).update({
           usersList: firestore.FieldValue.arrayUnion({
-            newToken
+            newInputId,
+            newToken,
+            newInputEmail
           })
         })
       } 

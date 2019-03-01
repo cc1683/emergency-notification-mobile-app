@@ -5,6 +5,17 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-card>
+
+    <ion-card-header>
+      <ion-card-title>Linked Users</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content *ngFor="let user of (userData | async)?.usersList">
+      <p>{{ user.newInputEmail }}</p>
+    </ion-card-content>
+      
+  </ion-card>
   <ion-list>
       <ion-item>
           <ion-label position="floating">Enter user email</ion-label>

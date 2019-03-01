@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../user.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -13,7 +14,7 @@ export class ProfilePage implements OnInit {
   fullname: string
   mremarks: string
   userID: string
-  userData
+  userData: Observable<any>
 
   constructor(public afStore: AngularFirestore, public user: UserService, public afAuth: AngularFireAuth) {
     const data = afStore.doc(`users/${user.getUid()}`)

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { UserService } from '../user.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
@@ -8,7 +8,6 @@ import { ToastController, Platform } from '@ionic/angular';
 import { firestore } from 'firebase';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { appendFileSync } from 'fs';
 
 
 @Component({
@@ -22,6 +21,13 @@ export class HomePage implements OnInit {
   lng: number
 
   requestUserUid: string
+
+  userListRef: AngularFirestoreDocument<any>
+  userList: Observable<any>
+  userListContainer: Array<any> = []
+
+  token: Array<string> = []
+  tokenCollection: Array<string> = []
 
 
   constructor(public afStore: AngularFirestore, 
@@ -71,7 +77,7 @@ export class HomePage implements OnInit {
     this.afAuth.authState.subscribe(res => {
       if(res && res.uid) {
         this.requestUserUid = res.uid 
-        let name = this.getRequestUserDetails(this.requestUserUid)
+        // let name = this.getRequestUserDetails(this.requestUserUid)
 
         let emergencyMsg = {
           // sender: name,
@@ -86,9 +92,24 @@ export class HomePage implements OnInit {
         //   })
         // })
 
-        this.afStore.collection('users/' + this.user.getUid() + '/notification').add({
+        this.userListRef = this.afStore.doc(`users/${this.user.getUid()}`)
+        this.userListRef.snapshotChanges().forEach(item => {
+          this.token = item.payload.data().usersList
+          if(this.token.length > 0) {
+            for(var i = 0; i<this.token.length; i++) {
+              let tokenId = item.payload.data().usersList[i].newToken
+              this.tokenCollection.push(tokenId)
+            }
+          }
+        })
+
+
+
+
+        this.afStore.collection('users/' + this.user.getUid() + '/notifications').add({
           message: 'Help! I located at '+this.lat+' & '+this.lng,
-          sender: this.user.getUsername()
+          sender: this.user.getUsername(),
+          receiver: this.tokenCollection
         })
 
       } else {
@@ -97,16 +118,16 @@ export class HomePage implements OnInit {
     })
   }
 
-  getRequestUserDetails(id: string): Observable<any> {
-    const userDetail = this.afStore.doc<any>('users/' +id)
-    return userDetail.snapshotChanges()
-      .pipe(
-        map(changes => {
-          const username = changes.payload.data().username
-          return username
-        })
-      )
-  }
+  // getRequestUserDetails(id: string): Observable<any> {
+  //   const userDetail = this.afStore.doc<any>('users/' +id)
+  //   return userDetail.snapshotChanges()
+  //     .pipe(
+  //       map(changes => {
+  //         const username = changes.payload.data().username
+  //         return username
+  //       })
+  //     )
+  // }
 
 
 
