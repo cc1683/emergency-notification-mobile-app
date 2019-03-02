@@ -10,5 +10,8 @@
   "compileOnSave": true,
   "include": [
     "src"
+  ],
+  "typeRoots": [
+    "./functions/node_modules/@types"
   ]
 }
