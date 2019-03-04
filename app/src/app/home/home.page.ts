@@ -3,6 +3,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { AngularFireAuth } from '@angular/fire/auth';
 import { UserService } from '../user.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderForwardResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx'
 import { Firebase } from '@ionic-native/firebase/ngx'
 import { ToastController, Platform } from '@ionic/angular';
 import { firestore } from 'firebase';
@@ -21,6 +22,8 @@ export class HomePage implements OnInit {
   lng: number
 
   requestUserUid: string
+  msg: any
+  requestMsg: string
 
   userListRef: AngularFirestoreDocument<any>
   userList: Observable<any>
@@ -34,6 +37,7 @@ export class HomePage implements OnInit {
               public afAuth: AngularFireAuth,
               public user: UserService, 
               public geolocation: Geolocation,
+              public nativegeocoder: NativeGeocoder,
               private firebase: Firebase,
               public toastCtrl: ToastController,
               private platform: Platform
@@ -44,17 +48,47 @@ export class HomePage implements OnInit {
     this.geolocation.getCurrentPosition().then((postion) => {
       this.lat = postion.coords.latitude
       this.lng = postion.coords.longitude
-    })
-
-    this.updateLocation()
-  }
-
-  updateLocation() {
-    this.afStore.doc(`users/${this.user.getUid()}`).update({
-      latitude: this.lat,
-      longitude: this.lng
+      this.updateLocation(this.lat, this.lng)
+    }).catch((error) => {
+      console.log('Error getting location', error)
     })
   }
+
+  // updateLocation() {
+  //   this.afStore.doc(`users/${this.user.getUid()}`).update({
+  //     latitude: this.lat,
+  //     longitude: this.lng
+  //   })
+  // }
+  // {"countryCode":"MY","countryName":"Malaysia","postalCode":"94300","administrativeArea":"Sarawak","subAdministrativeArea":"","locality":"Kota Samarahan","subLocality":"","thoroughfare":"Lorong Uni Garden 2C","subThoroughfare":"5073"}
+
+  updateLocation(lat, lng) {
+    let options: NativeGeocoderOptions = {
+      useLocale: true,
+      maxResults: 1
+    }
+
+    this.nativegeocoder.reverseGeocode(lat, lng, options)
+      .then((result: NativeGeocoderReverseResult[]) => 
+        this.msg = (result[0]['subThoroughfare']+', '+result[0]['thoroughfare'])+', '+result[0]['postalCode']+', '+result[0]['locality']+', '+result[0]['administrativeArea']
+        )
+  }
+
+  // generateAddress(addressObj) {
+  //   let obj = []
+  //   let address = ""
+  //   for(let key in addressObj) {
+  //     obj.push(addressObj[key])
+  //   }
+  //   obj.reverse()
+
+  //   for(let val in obj) {
+  //     if(obj[val].length)
+  //     address += obj[val]+', '
+  //   }
+
+  //   return address.slice(0, -2)
+  // }
 
   inDanger() {
     this.afAuth.authState.subscribe(res => {
@@ -70,7 +104,7 @@ export class HomePage implements OnInit {
               this.tokenCollection.push(tokenId)
             }
             this.afStore.collection('users/' + this.user.getUid() + '/notifications').add({
-              message: 'Help! I located at '+this.lat+' & '+this.lng,
+              message: 'Help! I locate at '+this.msg,
               sender: this.user.getUsername(),
               receiver: this.tokenCollection
             })
