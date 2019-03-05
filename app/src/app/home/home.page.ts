@@ -45,7 +45,13 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     this.getToken()
-    this.geolocation.getCurrentPosition().then((postion) => {
+    
+    var options = {
+      maximumAge: 3000,
+      timeout: 500,
+      enableHighAccuracy: true
+    }
+    this.geolocation.getCurrentPosition(options).then((postion) => {
       this.lat = postion.coords.latitude
       this.lng = postion.coords.longitude
       this.updateLocation(this.lat, this.lng)
@@ -60,6 +66,7 @@ export class HomePage implements OnInit {
   //     longitude: this.lng
   //   })
   // }
+  
   // {"countryCode":"MY","countryName":"Malaysia","postalCode":"94300","administrativeArea":"Sarawak","subAdministrativeArea":"","locality":"Kota Samarahan","subLocality":"","thoroughfare":"Lorong Uni Garden 2C","subThoroughfare":"5073"}
 
   updateLocation(lat, lng) {
