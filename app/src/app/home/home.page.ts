@@ -44,17 +44,17 @@ export class HomePage implements OnInit {
               ) { }
 
   ngOnInit() {
-    this.getToken()
     
     var options = {
       maximumAge: 3000,
-      timeout: 500,
+      timeout: 2700,
       enableHighAccuracy: true
     }
-    this.geolocation.getCurrentPosition(options).then((postion) => {
+    this.geolocation.getCurrentPosition().then((postion) => {
       this.lat = postion.coords.latitude
       this.lng = postion.coords.longitude
       this.saveCoor(this.lat, this.lng)
+      this.getToken()
     }).catch((error) => {
       console.log('Error getting location', error)
     })
@@ -139,7 +139,6 @@ export class HomePage implements OnInit {
     });
     this.firebase.onTokenRefresh().subscribe(token => {})
     this.subscribeToPushNotifications();
-    this.saveCoor(this.lat, this.lng)
   }
 
   initializeFirebaseIOS() {
