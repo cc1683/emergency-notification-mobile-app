@@ -29,10 +29,14 @@ export class LinkPage implements OnInit {
         const useremail = item.payload.doc.data().username
         const useruid = item.payload.doc.data().uid
         const usertoken = item.payload.doc.data().token
+        const userlatitude = item.payload.doc.data().latitude
+        const userlongitude = item.payload.doc.data().longitude
         const userdata = {
           useremail: useremail,
           useruid: useruid,
-          usertoken: usertoken
+          usertoken: usertoken,
+          userlatitude: userlatitude,
+          userlongitude: userlongitude
         }
         this.details.push(userdata)
       })
@@ -47,11 +51,15 @@ export class LinkPage implements OnInit {
       if(newInputEmail === detail.useremail) {
         let newInputId = detail.useruid
         let newToken = detail.usertoken
+        let newLatitude = detail.userlatitude
+        let newLongitude = detail.userlongitude
         this.afStore.doc(`users/${this.user.getUid()}`).update({
           usersList: firestore.FieldValue.arrayUnion({
             newInputId,
             newToken,
-            newInputEmail
+            newInputEmail,
+            newLatitude,
+            newLongitude
           })
         })
       } 

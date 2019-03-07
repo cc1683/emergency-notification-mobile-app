@@ -54,22 +54,24 @@ export class HomePage implements OnInit {
     this.geolocation.getCurrentPosition(options).then((postion) => {
       this.lat = postion.coords.latitude
       this.lng = postion.coords.longitude
-      this.updateLocation(this.lat, this.lng)
+      this.saveCoor(this.lat, this.lng)
     }).catch((error) => {
       console.log('Error getting location', error)
     })
   }
 
-  // updateLocation() {
-  //   this.afStore.doc(`users/${this.user.getUid()}`).update({
-  //     latitude: this.lat,
-  //     longitude: this.lng
-  //   })
-  // }
+  saveCoor(lat: number, lng: number) {
+    this.afStore.doc(`users/${this.user.getUid()}`).update({
+      latitude: lat,
+      longitude: lng
+    })
+    this.updateLocation(lat, lng)
+  }
   
   // {"countryCode":"MY","countryName":"Malaysia","postalCode":"94300","administrativeArea":"Sarawak","subAdministrativeArea":"","locality":"Kota Samarahan","subLocality":"","thoroughfare":"Lorong Uni Garden 2C","subThoroughfare":"5073"}
 
-  updateLocation(lat, lng) {
+  updateLocation(lat: number, lng: number) {
+
     let options: NativeGeocoderOptions = {
       useLocale: true,
       maxResults: 1
@@ -78,7 +80,7 @@ export class HomePage implements OnInit {
     this.nativegeocoder.reverseGeocode(lat, lng, options)
       .then((result: NativeGeocoderReverseResult[]) => 
         this.msg = (result[0]['subThoroughfare']+', '+result[0]['thoroughfare'])+', '+result[0]['postalCode']+', '+result[0]['locality']+', '+result[0]['administrativeArea']
-        )
+      )
   }
 
   // generateAddress(addressObj) {
@@ -137,6 +139,7 @@ export class HomePage implements OnInit {
     });
     this.firebase.onTokenRefresh().subscribe(token => {})
     this.subscribeToPushNotifications();
+    this.saveCoor(this.lat, this.lng)
   }
 
   initializeFirebaseIOS() {

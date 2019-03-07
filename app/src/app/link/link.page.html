@@ -16,18 +16,35 @@
     </ion-card-content>
       
   </ion-card>
-  <ion-list>
-      <ion-item>
-          <ion-label position="floating">Enter user email</ion-label>
-          <ion-input type="text" [(ngModel)]="linkUserEmail"></ion-input>
-      </ion-item>
-    </ion-list>
 
   <ion-grid>
-      <ion-row>
-        <ion-col>
-          <ion-button expand="full" fill="solid" color="dark" (click)="linkUser(linkUserEmail)">Link user</ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+    <ion-row>
+      <ion-col size="12" size-lg="6" *ngFor="let user of (userData | async)?.usersList">
+        <div>
+          <agm-map [latitude]="user.newLatitude" [longitude]="user.newLongitude">
+            <agm-marker [latitude]="user.newLatitude" [longitude]="user.newLongitude">
+                <agm-info-window>
+                  <h3><strong>{{ user.newInputEmail }}</strong></h3>
+                </agm-info-window>
+            </agm-marker>
+          </agm-map>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-list>
+    <ion-item>
+        <ion-label position="floating">Enter user email</ion-label>
+        <ion-input type="text" [(ngModel)]="linkUserEmail"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="full" fill="solid" color="dark" (click)="linkUser(linkUserEmail)">Link user</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
