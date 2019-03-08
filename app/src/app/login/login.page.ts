@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { auth } from 'firebase/app';
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,11 @@ export class LoginPage implements OnInit {
   username: string;
   password: string;
 
-  constructor(public afAuth: AngularFireAuth, public user: UserService, public router: Router) { }
+  constructor(public afAuth: AngularFireAuth, 
+              public user: UserService, 
+              public router: Router,
+              public alert: AlertController
+              ) { }
 
   ngOnInit() {
   }
@@ -30,11 +35,21 @@ export class LoginPage implements OnInit {
           username,
           uid: res.user.uid
         })
-
+        this.showAlert("Welcome", "Login successfully!");
         this.router.navigate(['/tabs']);
       }
     } catch(err) {
-      console.dir(err);
+      this.showAlert('Error', err.message)
     }
+  }
+
+  async showAlert(header: string, message: string) {
+    const alert = await this.alert.create({
+      header,
+      message,
+      buttons: ["OK"]
+    })  
+
+    await alert.present();
   }
 }

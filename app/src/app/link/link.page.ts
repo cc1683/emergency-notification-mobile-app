@@ -4,6 +4,7 @@ import { UserService } from '../user.service';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { firestore } from 'firebase';
 import { Observable } from 'rxjs';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-link',
@@ -19,7 +20,11 @@ export class LinkPage implements OnInit {
   userData: Observable<any>
 
 
-  constructor(public afAuth: AngularFireAuth, public afStore: AngularFirestore, public user: UserService) { 
+  constructor(public afAuth: AngularFireAuth, 
+              public afStore: AngularFirestore, 
+              public user: UserService,
+              public alert: AlertController
+              ) { 
     const data = afStore.doc(`users/${user.getUid()}`)
     this.userData = data.valueChanges()
 
@@ -62,7 +67,19 @@ export class LinkPage implements OnInit {
             newLongitude
           })
         })
+
+        this.showAlert('Success', `${detail.useremail} is now your linked members`)
       } 
     }
+  }
+
+  async showAlert(header: string, message: string) {
+    const alert = await this.alert.create({
+      header,
+      message,
+      buttons: ["OK"]
+    })  
+
+    await alert.present();
   }
 }

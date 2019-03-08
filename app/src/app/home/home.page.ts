@@ -9,6 +9,7 @@ import { ToastController, Platform } from '@ionic/angular';
 import { firestore } from 'firebase';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AlertController } from '@ionic/angular';
 
 
 @Component({
@@ -40,16 +41,17 @@ export class HomePage implements OnInit {
               public nativegeocoder: NativeGeocoder,
               private firebase: Firebase,
               public toastCtrl: ToastController,
-              private platform: Platform
+              private platform: Platform,
+              public alert: AlertController
               ) { }
 
   ngOnInit() {
     
-    var options = {
-      maximumAge: 3000,
-      timeout: 2700,
-      enableHighAccuracy: true
-    }
+    // var options = {
+    //   maximumAge: 3000,
+    //   timeout: 2700,
+    //   enableHighAccuracy: true
+    // }
     this.geolocation.getCurrentPosition().then((postion) => {
       this.lat = postion.coords.latitude
       this.lng = postion.coords.longitude
@@ -119,6 +121,9 @@ export class HomePage implements OnInit {
             })
 
             this.tokenCollection = []
+            this.showAlert('Success', 'Message sent successfully!')
+          } else if(!this.token) {
+            this.showAlert('Error', 'No linked members found!')
           }
         })
       } else {
@@ -171,5 +176,15 @@ export class HomePage implements OnInit {
       duration: 3000
     });
     await toast.present();
+  }
+
+  async showAlert(header: string, message: string) {
+    const alert = await this.alert.create({
+      header,
+      message,
+      buttons: ["OK"]
+    })  
+
+    await alert.present();
   }
 }
