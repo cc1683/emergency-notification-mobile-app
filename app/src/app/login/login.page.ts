@@ -52,4 +52,8 @@ export class LoginPage implements OnInit {
 
     await alert.present();
   }
+
+  goReset() {
+    this.router.navigate(['/reset']);
+  }
 }
