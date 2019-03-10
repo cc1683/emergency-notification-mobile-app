@@ -37,6 +37,8 @@ export class LoginPage implements OnInit {
         })
         this.showAlert("Welcome", "Login successfully!");
         this.router.navigate(['/tabs']);
+        this.username = ''
+        this.password = ''
       }
     } catch(err) {
       this.showAlert('Error', err.message)

@@ -4,6 +4,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 import { AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-profile',
@@ -20,7 +22,8 @@ export class ProfilePage implements OnInit {
   constructor(public afStore: AngularFirestore, 
               public user: UserService, 
               public afAuth: AngularFireAuth,
-              public alert: AlertController
+              public alert: AlertController,
+              public router: Router
               ) {
     const data = afStore.doc(`users/${user.getUid()}`)
     this.userData = data.valueChanges()
@@ -36,6 +39,16 @@ export class ProfilePage implements OnInit {
     })
 
     this.showAlert('Success', 'Profile updated successfully!')
+    this.fullname = '',
+    this.mremarks = ''
+  }
+
+  signOut() {
+    this.afAuth.auth.signOut()
+      .then(() => {
+        this.showAlert('Success', 'Sign out successfully')
+        this.router.navigate(['/login'])
+      })
   }
 
   async showAlert(header: string, message: string) {
