@@ -18,9 +18,4 @@ export class ChatPage implements OnInit {
 
   ngOnInit() {
   }
-
-  sendMsg(msg: string) {
-    
-  }
-
 }
