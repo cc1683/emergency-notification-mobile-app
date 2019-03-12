@@ -35,8 +35,8 @@ export class LoginPage implements OnInit {
           username,
           uid: res.user.uid
         })
-        this.showAlert("Welcome", "Login successfully!");
-        this.router.navigate(['/tabs']);
+        await this.showAlert("Welcome", "Login successfully!");
+        await this.router.navigate(['/tabs']);
         this.username = ''
         this.password = ''
       }
