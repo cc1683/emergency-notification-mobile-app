@@ -121,9 +121,7 @@ export class HomePage implements OnInit {
             })
 
             this.tokenCollection = []
-            this.showAlert('Success', 'Message sent successfully!')
-          } else if(!this.token) {
-            this.showAlert('Error', 'No linked members found!')
+            return this.showAlert('Success', 'Message sent successfully!')
           }
         })
       } else {
