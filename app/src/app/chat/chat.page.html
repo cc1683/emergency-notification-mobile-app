@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>chat</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-item>
+      <ion-input item-start type="text" [(ngModel)]="message"></ion-input>
+      <ion-button item-end fill="solid" color="success" (click)="sendMsg(message)">Send</ion-button>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>
