@@ -47,3 +47,47 @@ export const emergencyNotif = functions.firestore
       })
 
     })
+
+export const broadcastChats = functions.firestore
+    .document('users/{userID}/chats/{chatID}')
+    .onCreate(async event => {
+
+      const data = event.data();
+
+      const chatsender = data.sender
+      const chatmsg = data.message
+
+      const payload = {
+        notification: {
+          title: `${chatsender} sent a message`,
+          body: chatmsg 
+        }
+      }
+
+      const chatdb = admin.firestore()
+      const chatdeviceRef = chatdb.collection('users').where('username', '==', chatsender)
+
+      const devices = await chatdeviceRef.get()
+
+      let chattokens = []
+
+      let chatreceiverDevices = []
+      
+      devices.forEach(result => {
+          chattokens = result.data().usersList
+          if(chattokens.length > 0) {
+            for(var i=0; i<chattokens.length; i++) {
+              let token = result.data().usersList[i].newToken
+              chatreceiverDevices.push(token)
+            }
+          } else if(typeof chattokens == "undefined") {
+            console.log('Link users no exist yet')
+          }
+      })
+
+      return admin.messaging().sendToDevice(chatreceiverDevices, payload).then(result => {
+        console.log('success')
+        chatreceiverDevices = []
+      })
+
+    })

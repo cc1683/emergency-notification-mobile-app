@@ -109,7 +109,9 @@ export class HomePage implements OnInit {
         this.userListRef = this.afStore.doc(`users/${this.user.getUid()}`)
         this.userListRef.snapshotChanges().forEach(item => {
           this.token = item.payload.data().usersList
-          if(this.token.length > 0) {
+          if(typeof this.token == "undefined") {
+            return this.showAlert('Error', 'Cannot find any link members!')
+          } else if (this.token.length > 0) {
             for(var i = 0; i<this.token.length; i++) {
               let tokenId = item.payload.data().usersList[i].newToken
               this.tokenCollection.push(tokenId)
@@ -163,7 +165,7 @@ export class HomePage implements OnInit {
         //This is empty for our app since we just needed the notification to open the app
       }else{
         //received while app in foreground (show a toast)
-        this.showToast(response.body)
+        this.showAlert(response.title, response.body)
       }
     });
   }
