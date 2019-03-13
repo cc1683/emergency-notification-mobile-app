@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { UserService } from '../user.service';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { firestore } from 'firebase';
 import { Observable } from 'rxjs';
 import { AlertController } from '@ionic/angular';
@@ -16,6 +16,13 @@ export class LinkPage implements OnInit {
   emailsCollection: AngularFirestoreCollection<any>
   details: Array<any> = []
   linkUserEmail: string
+
+  userListRef: AngularFirestoreDocument<any>
+  userList: Observable<any>
+  userListContainer: Array<any> = []
+
+  token: Array<string> = []
+  tokenCollection: Array<string> = []
 
   userData: Observable<any>
 
@@ -69,8 +76,32 @@ export class LinkPage implements OnInit {
         })
 
         this.showAlert('Success', `${detail.useremail} is now your linked members`)
+        this.linkUserEmail = ''
       } 
     }
+  }
+
+  deleteUser(email: string) {
+    this.userListRef = this.afStore.doc(`users/${this.user.getUid()}`)
+    this.userListRef.snapshotChanges().forEach(item => {
+      this.token = item.payload.data().usersList
+      if(typeof this.token == "undefined") {
+        return this.showAlert('Error', 'Cannot find any link members!')
+      } else if (this.token.length > 0) {
+        for(var i=0; i<this.token.length; i++) {
+          let deleteEmail = item.payload.data().usersList[i].newInputEmail
+          if(email === deleteEmail) {
+            let remove = item.payload.data().usersList[i]
+            this.afStore.doc(`users/${this.user.getUid()}`).update({
+              usersList: firestore.FieldValue.arrayRemove(remove)
+            })
+
+            this.showAlert('Success', `${deleteEmail} is been remove`)
+            this.linkUserEmail = ''
+          }
+        }
+      }
+    })
   }
 
   async showAlert(header: string, message: string) {

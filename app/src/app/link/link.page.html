@@ -42,8 +42,11 @@
 
   <ion-grid>
     <ion-row>
-      <ion-col>
+      <ion-col size="6">
         <ion-button expand="full" fill="solid" color="dark" (click)="linkUser(linkUserEmail)">Link user</ion-button>
+      </ion-col>
+      <ion-col size="6">
+        <ion-button expand="full" fill="solid" color="danger" (click)="deleteUser(linkUserEmail)">Delete</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
