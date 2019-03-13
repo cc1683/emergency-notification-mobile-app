@@ -9,7 +9,17 @@
     <ion-item *ngFor="let user of (userData | async)?.usersList">
       <ion-icon name="people" slot="start"></ion-icon>
       <ion-label>{{ user.newInputEmail }}</ion-label>
-      <ion-button color="dark" item-end>Chat</ion-button>
     </ion-item>
   </ion-card>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-item>
+      <ion-input item-left placeholder="Enter your message here" [(ngModel)]="msg"></ion-input>
+      <ion-button item-right (click)="broadcastMsg(msg)">
+        <ion-icon name="mail"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>

@@ -32,15 +32,17 @@ export class ProfilePage implements OnInit {
   ngOnInit() {
   }
 
-  updateProfile() {
-    this.afStore.doc(`users/${this.user.getUid()}`).update({
-      fullname: this.fullname,
-      medicalremarks: this.mremarks
-    })
-
-    this.showAlert('Success', 'Profile updated successfully!')
+  async updateProfile() {
+    if((this.fullname.length && this.mremarks.length) > 0) {
+      this.afStore.doc(`users/${this.user.getUid()}`).update({
+        fullname: this.fullname,
+        medicalremarks: this.mremarks
+      })
+    }
+    await this.showAlert('Success', 'Profile updated successfully!')
     this.fullname = '',
     this.mremarks = ''
+    return true;
   }
 
   signOut() {
