@@ -87,6 +87,8 @@ export class LinkPage implements OnInit {
 
         this.showAlert('Success', `${detail.useremail} is now your linked members`)
         this.linkUserEmail = ''
+
+        break;
       } 
     }
   }
@@ -108,6 +110,7 @@ export class LinkPage implements OnInit {
 
             this.showAlert('Success', `${deleteEmail} is been remove`)
             this.linkUserEmail = ''
+            break;
           }
         }
       }
