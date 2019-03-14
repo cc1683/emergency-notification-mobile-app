@@ -21,6 +21,14 @@ export class LinkPage implements OnInit {
   userList: Observable<any>
   userListContainer: Array<any> = []
 
+  userOwnRef: AngularFirestoreDocument<any>
+  userOwn: Observable<any>
+  // ownUid: string
+  // ownLatitude: number
+  // ownLongitude: string
+  // ownToken: string
+  // ownUsername: string
+
   token: Array<string> = []
   tokenCollection: Array<string> = []
 
@@ -75,6 +83,8 @@ export class LinkPage implements OnInit {
           })
         })
 
+        this.updateLink(newInputId)
+
         this.showAlert('Success', `${detail.useremail} is now your linked members`)
         this.linkUserEmail = ''
       } 
@@ -101,6 +111,27 @@ export class LinkPage implements OnInit {
           }
         }
       }
+    })
+  }
+
+  updateLink(uid: string) {
+    this.userOwnRef = this.afStore.doc(`users/${this.user.getUid()}`)
+    this.userOwnRef.snapshotChanges().forEach(item => {
+      let newLatitude = item.payload.data().latitude
+      let newLongitude = item.payload.data().longitude
+      let newToken = item.payload.data().token
+      let newInputId = item.payload.data().uid
+      let newInputEmail = item.payload.data().username
+
+      this.afStore.doc(`users/${uid}`).update({
+        usersList: firestore.FieldValue.arrayUnion({
+          newInputId,
+          newToken ,
+          newInputEmail,
+          newLatitude,
+          newLongitude
+        })
+      })
     })
   }
 
