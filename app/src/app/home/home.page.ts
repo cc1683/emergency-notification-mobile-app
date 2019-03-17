@@ -132,6 +132,16 @@ export class HomePage implements OnInit {
     })
   }
 
+  relocateMe() {
+    let watch = this.geolocation.watchPosition();
+    watch.subscribe((data) => {
+      this.lat = data.coords.latitude
+      this.lng = data.coords.longitude
+      this.saveCoor(this.lat, this.lng)
+      this.showAlert('Success', 'Location updated!')
+    })
+  }
+
   getToken() {
     this.platform.is("android") ? this.initializeFirebaseAndroid() : this.initializeFirebaseIOS()
   }

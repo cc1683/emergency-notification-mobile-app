@@ -45,6 +45,10 @@ export class LoginPage implements OnInit {
     }
   }
 
+  // goRegister() {
+  //   this.router.navigate(['/register']);
+  // }
+
   async showAlert(header: string, message: string) {
     const alert = await this.alert.create({
       header,

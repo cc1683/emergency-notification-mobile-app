@@ -5,6 +5,18 @@
   </ion-header>
   
   <ion-content padding>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-subtitle>No Safety, Know Pain</ion-card-subtitle>
+        <ion-card-title>Emergency Notification App</ion-card-title>
+      </ion-card-header>
+    
+      <ion-card-content>
+        <img src="../../assets/img/exit-bg.jpg" alt="">
+      </ion-card-content>
+    </ion-card>
+
     <ion-list>
       <ion-item>
           <ion-label position="floating">Email</ion-label>
@@ -25,9 +37,10 @@
     <ion-grid>
       <ion-row>
         <ion-col>
-          <ion-button expand="full" fill="solid" color="dark" (click)="register()">Signup</ion-button>
+          <ion-button expand="block" fill="solid" color="dark" shape="round" (click)="register()">Signup</ion-button>
           <div text-center>
-            <p>Already has account? <ion-button fill="solid" color="light" (click)="goLogin()">Login</ion-button></p>
+            <p>Already has account?</p>
+            <ion-button expand="block" fill="solid" color="light" size="small" shape="round" (click)="goLogin()" >Login</ion-button>
           </div>
         </ion-col>
       </ion-row>
