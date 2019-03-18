@@ -1,12 +1,9 @@
 import * as functions from 'firebase-functions';
-
 import * as admin from 'firebase-admin';
-import { async } from 'q';
-
 
 admin.initializeApp(functions.config().firebase);
 
-export const emergencyNotif = functions.firestore
+export const pushNotifications = functions.firestore
     .document('users/{userID}/notifications/{notificationID}')
     .onCreate(async event => {
 
@@ -23,27 +20,28 @@ export const emergencyNotif = functions.firestore
       }
 
       const db = admin.firestore()
-      const deviceRef = db.collection('users').where('username', '==', sender)
+      const userRef = db.collection('users').where('username', '==', sender)
 
-      const devices = await deviceRef.get()
+      const users = await userRef.get()
 
-      let tokens = []
+      let linkUserToken = []
 
-      let receiverDevices = []
-      
-      devices.forEach(result => {
-          tokens = result.data().usersList
-          if(tokens.length > 0) {
-            for(var i=0; i<tokens.length; i++) {
+      let receiverDeviceToken = []
+    
+      users.forEach(result => {
+          linkUserToken = result.data().usersList
+          if(linkUserToken.length > 0) {
+            for(var i=0; i<linkUserToken.length; i++) {
               let token = result.data().usersList[i].newToken
-              receiverDevices.push(token)
+              receiverDeviceToken.push(token)
             }
+          } else if(typeof linkUserToken == "undefined") {
+            return console.log('Link user no found')
           }
       })
 
-      return admin.messaging().sendToDevice(receiverDevices, payload).then(result => {
-        console.log('success')
-        receiverDevices = []
+      return admin.messaging().sendToDevice(receiverDeviceToken, payload).then(result => {
+        receiverDeviceToken = []
       })
 
     })
@@ -54,40 +52,39 @@ export const broadcastChats = functions.firestore
 
       const data = event.data();
 
-      const chatsender = data.sender
-      const chatmsg = data.message
+      const chatSender = data.sender
+      const chatMsg = data.message
 
       const payload = {
         notification: {
-          title: `${chatsender} sent a message`,
-          body: chatmsg 
+          title: `${chatSender} sent a message`,
+          body: chatMsg 
         }
       }
 
       const chatdb = admin.firestore()
-      const chatdeviceRef = chatdb.collection('users').where('username', '==', chatsender)
+      const chatdeviceRef = chatdb.collection('users').where('username', '==', chatSender)
 
       const devices = await chatdeviceRef.get()
 
-      let chattokens = []
+      let chatTokens = []
 
-      let chatreceiverDevices = []
+      let chatReceiverDevices = []
       
       devices.forEach(result => {
-          chattokens = result.data().usersList
-          if(chattokens.length > 0) {
-            for(var i=0; i<chattokens.length; i++) {
+          chatTokens = result.data().usersList
+          if(chatTokens.length > 0) {
+            for(var i=0; i<chatTokens.length; i++) {
               let token = result.data().usersList[i].newToken
-              chatreceiverDevices.push(token)
+              chatReceiverDevices.push(token)
             }
-          } else if(typeof chattokens == "undefined") {
-            console.log('Link users no exist yet')
+          } else if(typeof chatTokens == "undefined") {
+            return console.log('Link user no found')
           }
       })
 
-      return admin.messaging().sendToDevice(chatreceiverDevices, payload).then(result => {
-        console.log('success')
-        chatreceiverDevices = []
+      return admin.messaging().sendToDevice(chatReceiverDevices, payload).then(result => {
+        chatReceiverDevices = []
       })
 
     })
