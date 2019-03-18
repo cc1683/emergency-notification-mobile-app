@@ -16,8 +16,6 @@ export class UserService {
     this.user = user
   }
 
-
-
   getUid() {
     if(!this.user) {
       if(this.afAuth.auth.currentUser) {

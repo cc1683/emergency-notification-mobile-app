@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { auth } from 'firebase/app';
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
@@ -35,19 +34,21 @@ export class LoginPage implements OnInit {
           username,
           uid: res.user.uid
         })
+        this.clearField()
         await this.showAlert("Welcome", "Login successfully!");
-        await this.router.navigate(['/tabs']);
-        this.username = ''
-        this.password = ''
+        this.router.navigate(['/tabs']);
       }
     } catch(err) {
-      this.showAlert('Error', err.message)
+      this.showAlert("Error", err.message)
+      return console.log(err.message)
     }
   }
 
-  // goRegister() {
-  //   this.router.navigate(['/register']);
-  // }
+  clearField() {
+    this.username = ''
+    this.password = ''
+    return console.log('')
+  }
 
   async showAlert(header: string, message: string) {
     const alert = await this.alert.create({

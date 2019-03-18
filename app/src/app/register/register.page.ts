@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { auth } from 'firebase/app';
 import { AlertController } from '@ionic/angular';
-
-import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { UserService } from '../user.service';
@@ -19,8 +16,6 @@ export class RegisterPage implements OnInit {
   username: string;
   password: string;
   cpassword: string;
-  fullname: string;
-  mremarks: string;
 
   constructor(public afAuth: AngularFireAuth,
               public afStore: AngularFirestore,
@@ -59,6 +54,7 @@ export class RegisterPage implements OnInit {
 
     } catch(err) {
       this.showAlert("Error!", err.message);
+      return console.log(err.message)
     }
   }
 

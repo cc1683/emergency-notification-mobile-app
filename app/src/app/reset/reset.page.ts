@@ -20,8 +20,8 @@ export class ResetPage implements OnInit {
   async resetPassword(email: string) {
     var auth = firebase.auth()
     return auth.sendPasswordResetEmail(email)
-      .then(() => this.showAlert('Success', 'Email sent'))
-      .catch((error) => this.showAlert('Error', error))
+      .then(() => this.showAlert("Success", "Check your mailbox"))
+      .catch((error) => this.showAlert("Error", error))
   }
 
   async showAlert(header: string, message: string) {
