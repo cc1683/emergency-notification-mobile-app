@@ -102,7 +102,6 @@ export class HomePage implements OnInit {
   // }
 
   inDanger() {
-    this.tokenCollection = []
     this.afAuth.authState.subscribe(res => {
       if(res && res.uid) {
         this.requestUserUid = res.uid 
@@ -113,25 +112,34 @@ export class HomePage implements OnInit {
           if(typeof this.token == "undefined") {
             this.showAlert('Error', 'Cannot find any link members!')
             return false;
-          } else if (this.token.length > 0) {
+          } else if ((typeof this.token != "undefined" && this.token.length > 0)) {
             for(var i = 0; i<this.token.length; i++) {
               let tokenId = item.payload.data().usersList[i].newToken
               this.tokenCollection.push(tokenId)
             }
           }
         })
-        this.afStore.collection('users/' + this.user.getUid() + '/notifications').add({
-          message: 'Help! I locate at '+this.msg,
-          sender: this.user.getUsername(),
-          receiver: this.tokenCollection
-        })
-        
-        this.showAlert('Success', 'Message sent successfully!')
-        return;
+        this.storeDB(this.tokenCollection)
       } else {
         throw new Error("User not logged in")
       }
     })
+  }
+
+  storeDB(lists: Array<string>) {
+    if(typeof lists == "undefined") {  
+      this.showAlert('Error', 'Cannot find any linked members!')
+      return false;
+    } else if ((typeof lists != "undefined" && lists.length > 0)) {
+      this.afStore.collection('users/' + this.user.getUid() + '/notifications').add({
+        message: 'Help! I locate at '+this.msg,
+        sender: this.user.getUsername(),
+        receiver: lists
+      })
+      this.showAlert('Success', 'Message sent successfully!')
+      this.tokenCollection.length = 0;
+      return;
+    }
   }
 
   relocateMe() {
