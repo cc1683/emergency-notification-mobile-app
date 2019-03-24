@@ -4,6 +4,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 import { AlertController } from '@ionic/angular';
+import { ToastController, Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
 
 
@@ -23,7 +24,8 @@ export class ProfilePage implements OnInit {
               public user: UserService, 
               public afAuth: AngularFireAuth,
               public alert: AlertController,
-              public router: Router
+              public router: Router,
+              public toastCtrl: ToastController
               ) {
     const data = afStore.doc(`users/${user.getUid()}`)
     this.userData = data.valueChanges()
@@ -32,17 +34,20 @@ export class ProfilePage implements OnInit {
   ngOnInit() {
   }
 
-  async updateProfile() {
+  updateProfile() {
     if((this.fullname.length && this.mremarks.length) > 0) {
       this.afStore.doc(`users/${this.user.getUid()}`).update({
         fullname: this.fullname,
         medicalremarks: this.mremarks
       })
+      this.showToast('Profile updated successfully!')
+      this.fullname = '',
+      this.mremarks = ''
+      return true;
+    } else {
+      this.showAlert('Error', 'Something wrong!')
+      return false;
     }
-    await this.showAlert('Success', 'Profile updated successfully!')
-    this.fullname = '',
-    this.mremarks = ''
-    return true;
   }
 
   signOut() {
@@ -61,6 +66,15 @@ export class ProfilePage implements OnInit {
     })  
 
     await alert.present();
+    return;
+  }
+
+  async showToast(msg: string) {
+    let toast = await this.toastCtrl.create({
+      message: msg,
+      duration: 3000
+    });
+    await toast.present();
   }
 
 }

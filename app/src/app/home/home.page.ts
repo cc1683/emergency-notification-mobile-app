@@ -102,6 +102,7 @@ export class HomePage implements OnInit {
   // }
 
   inDanger() {
+    this.tokenCollection = []
     this.afAuth.authState.subscribe(res => {
       if(res && res.uid) {
         this.requestUserUid = res.uid 
@@ -110,22 +111,23 @@ export class HomePage implements OnInit {
         this.userListRef.snapshotChanges().forEach(item => {
           this.token = item.payload.data().usersList
           if(typeof this.token == "undefined") {
-            return this.showAlert('Error', 'Cannot find any link members!')
+            this.showAlert('Error', 'Cannot find any link members!')
+            return false;
           } else if (this.token.length > 0) {
             for(var i = 0; i<this.token.length; i++) {
               let tokenId = item.payload.data().usersList[i].newToken
               this.tokenCollection.push(tokenId)
             }
-            this.afStore.collection('users/' + this.user.getUid() + '/notifications').add({
-              message: 'Help! I locate at '+this.msg,
-              sender: this.user.getUsername(),
-              receiver: this.tokenCollection
-            })
-
-            this.tokenCollection = []
-            return this.showAlert('Success', 'Message sent successfully!')
           }
         })
+        this.afStore.collection('users/' + this.user.getUid() + '/notifications').add({
+          message: 'Help! I locate at '+this.msg,
+          sender: this.user.getUsername(),
+          receiver: this.tokenCollection
+        })
+        
+        this.showAlert('Success', 'Message sent successfully!')
+        return;
       } else {
         throw new Error("User not logged in")
       }
@@ -137,9 +139,10 @@ export class HomePage implements OnInit {
     watch.subscribe((data) => {
       this.lat = data.coords.latitude
       this.lng = data.coords.longitude
-      this.saveCoor(this.lat, this.lng)
-      this.showAlert('Success', 'Location updated!')
     })
+    this.saveCoor(this.lat, this.lng)
+    this.showToast('Location updated!')
+    return;
   }
 
   getToken() {
@@ -196,5 +199,6 @@ export class HomePage implements OnInit {
     })  
 
     await alert.present();
+    return;
   }
 }

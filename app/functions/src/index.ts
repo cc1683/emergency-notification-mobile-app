@@ -40,9 +40,7 @@ export const pushNotifications = functions.firestore
           }
       })
 
-      return admin.messaging().sendToDevice(receiverDeviceToken, payload).then(result => {
-        receiverDeviceToken = []
-      })
+      return admin.messaging().sendToDevice(receiverDeviceToken, payload)
 
     })
 
@@ -83,8 +81,6 @@ export const broadcastChats = functions.firestore
           }
       })
 
-      return admin.messaging().sendToDevice(chatReceiverDevices, payload).then(result => {
-        chatReceiverDevices = []
-      })
+      return admin.messaging().sendToDevice(chatReceiverDevices, payload)
 
     })

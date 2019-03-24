@@ -39,29 +39,30 @@ export class ChatPage implements OnInit {
   }
 
   broadcastMsg(msg: string) {
+    this.tokenCollection = []
     this.userListRef = this.afStore.doc(`users/${this.user.getUid()}`)
     this.userListRef.snapshotChanges().forEach(item => {
       this.token = item.payload.data().usersList
       this.username = item.payload.data().fullname
       if(typeof this.token == "undefined") {
-        return this.showAlert('Error', 'Cannot find any link members!')
+        this.showAlert('Error', 'Cannot find any link members!')
+        return false;
       } else if (this.token.length > 0) {
         for(var i=0; i<this.token.length; i++) {
           let tokenId = item.payload.data().usersList[i].newToken
           this.tokenCollection.push(tokenId)
         }
-        this.afStore.collection('users/' + this.user.getUid() + '/chats').add({
-          message: msg,
-          sender: this.user.getUsername(),
-          receiver: this.tokenCollection
-        })
-
-        this.tokenCollection = []
-        this.showAlert('Success', 'Messages sent successfully!')
-        this.msg= ''
-        return true;
       }
     })
+    this.afStore.collection('users/' + this.user.getUid() + '/chats').add({
+      message: msg,
+      sender: this.user.getUsername(),
+      receiver: this.tokenCollection
+    })
+    
+    this.showAlert('Success', 'Messages sent successfully!')
+    this.msg= ''
+    return;
   }
 
   async showAlert(header: string, message: string) {
@@ -72,5 +73,6 @@ export class ChatPage implements OnInit {
     })  
 
     await alert.present();
+    return;
   }
 }
