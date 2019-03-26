@@ -53,7 +53,7 @@ export const broadcastChats = functions.firestore
       const chatSender = data.sender
       const chatMsg = data.message
 
-      const payload = {
+      const chatPayload = {
         notification: {
           title: `${chatSender} sent a message`,
           body: chatMsg 
@@ -81,6 +81,6 @@ export const broadcastChats = functions.firestore
           }
       })
 
-      return admin.messaging().sendToDevice(chatReceiverDevices, payload)
+      return admin.messaging().sendToDevice(chatReceiverDevices, chatPayload)
 
     })
