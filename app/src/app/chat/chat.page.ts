@@ -61,7 +61,7 @@ export class ChatPage implements OnInit {
       this.showAlert('Error', 'Cannot find any linked members!')
       return false;
     } else {
-      this.afStore.collection('users/' + this.user.getUid() + '/notifications').add({
+      this.afStore.collection('users/' + this.user.getUid() + '/chats').add({
         message: message,
         sender: this.user.getUsername(),
         receiver: lists
