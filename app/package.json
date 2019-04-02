@@ -34,6 +34,8 @@
     "cordova-android": "7.1.4",
     "cordova-browser": "5.0.4",
     "cordova-plugin-device": "^2.0.2",
+    "cordova-plugin-exit": "^1.0.2",
+    "cordova-plugin-exitapp2": "^1.0.4",
     "cordova-plugin-fcm-with-dependecy-updated": "2.4.0",
     "cordova-plugin-firebase": "2.0.5",
     "cordova-plugin-geolocation": "4.0.1",
@@ -90,7 +92,8 @@
       "cordova-plugin-geolocation": {},
       "cordova-plugin-firebase": {},
       "cordova-plugin-fcm-with-dependecy-updated": {},
-      "cordova-plugin-nativegeocoder": {}
+      "cordova-plugin-nativegeocoder": {},
+      "kr.co.joycorp.cordova.exitapp": {}
     },
     "platforms": [
       "android",

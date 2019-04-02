@@ -110,7 +110,9 @@ export class LinkPage implements OnInit {
 
             this.showAlert('Success', `${deleteEmail} is been remove`)
             this.linkUserEmail = ''
-            break;
+            return true
+          } else {
+            return true;
           }
         }
       }
