@@ -23,7 +23,7 @@ export class LoginPage implements OnInit {
   ngOnInit() {
   }
 
-  //! Login function
+  //* Login function
   async login() {
     const { username, password } = this;
     try {

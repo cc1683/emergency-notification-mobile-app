@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { UserService } from '../user.service';
 
-
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
