@@ -11,7 +11,6 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AlertController } from '@ionic/angular';
 
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
@@ -47,11 +46,6 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     
-    // var options = {
-    //   maximumAge: 3000,
-    //   timeout: 2700,
-    //   enableHighAccuracy: true
-    // }
     this.geolocation.getCurrentPosition().then((postion) => {
       this.lat = postion.coords.latitude
       this.lng = postion.coords.longitude
@@ -60,6 +54,7 @@ export class HomePage implements OnInit {
     }).catch((error) => {
       console.log('Error getting location', error)
     })
+
   }
 
   saveCoor(lat: number, lng: number) {
@@ -81,7 +76,7 @@ export class HomePage implements OnInit {
 
     this.nativegeocoder.reverseGeocode(lat, lng, options)
       .then((result: NativeGeocoderReverseResult[]) => 
-        this.msg = (result[0]['subThoroughfare']+', '+result[0]['thoroughfare'])+', '+result[0]['postalCode']+', '+result[0]['locality']+', '+result[0]['administrativeArea']
+        this.msg = (result[0]['subThoroughfare']+' '+result[0]['thoroughfare'])+' '+result[0]['postalCode']+' '+result[0]['locality']+' '+result[0]['administrativeArea']
       )
   }
 

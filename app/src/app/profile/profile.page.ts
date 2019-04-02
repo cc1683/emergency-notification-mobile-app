@@ -35,7 +35,7 @@ export class ProfilePage implements OnInit {
   }
 
   updateProfile() {
-    if((this.fullname.length && this.mremarks.length) > 0) {
+    if((this.fullname.length > 0) && (this.mremarks.length) > 0) {
       this.afStore.doc(`users/${this.user.getUid()}`).update({
         fullname: this.fullname,
         medicalremarks: this.mremarks

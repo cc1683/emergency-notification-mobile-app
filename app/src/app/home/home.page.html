@@ -1,28 +1,23 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="dark">
     <ion-title>Home</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-    <div>
 
-        <agm-map [latitude]="lat" [longitude]="lng">
-      
-          <agm-marker [latitude]="lat" [longitude]="lng">
-      
-            <agm-info-window>
-              <h3><strong>Howdy!</strong></h3>
-              <p>You are here!</p>
-            </agm-info-window>
-      
-          </agm-marker>
-      
-        </agm-map>
-      
-    </div>
+  <div>
+    <agm-map [latitude]="lat" [longitude]="lng">
+      <agm-marker [latitude]="lat" [longitude]="lng">
+        <agm-info-window>
+          <h3><strong>Howdy!</strong></h3>
+          <p>You are here!</p>
+        </agm-info-window>
+      </agm-marker>
+    </agm-map>
+  </div>
 
-    <!-- <ion-button expand="full" fill="solid" color="dark" (click)="updateLocation()">Save</ion-button> -->
-    <ion-button expand="full" fill="solid" color="primary" (click)="relocateMe()">Relocate Me</ion-button>
-    <ion-button expand="full" fill="solid" color="danger" (click)="inDanger()">Push Notification</ion-button>
+  <ion-button expand="full" fill="solid" color="dark" (click)="relocateMe()">Relocate Me</ion-button>
+  <ion-button expand="full" fill="solid" color="danger" (click)="inDanger()">Push Notification</ion-button>
+
 </ion-content>
