@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-title>Tips</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-text color="dark">
+    <h3>Malaysia Useful Emergency Numbers</h3>
+    <p>Tap to call</p>
+  </ion-text>
+
+  <ion-list>
+    <ion-item (click)="makeCall(999)">
+      <ion-label>Police and Ambulance</ion-label>
+    </ion-item>
+    <ion-item (click)="makeCall(994)">
+      <ion-label>Fire Brigade</ion-label>
+    </ion-item>
+    <ion-item (click)="makeCall(991)">
+      <ion-label>Civil Defense</ion-label>
+    </ion-item > 
+    <ion-item (click)="makeCall(0392851576)">
+      <ion-label>St.John's Ambulance</ion-label>
+    </ion-item>
+    <ion-item (click)="makeCall(0342578726)">
+      <ion-label>Red Cresent Society</ion-label>
+    </ion-item>
+    <ion-item (click)="makeCall(991)">
+      <ion-label>Accidents/ Natural Disasters</ion-label>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

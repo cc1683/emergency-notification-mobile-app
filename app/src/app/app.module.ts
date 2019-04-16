@@ -12,6 +12,9 @@ import { environment } from '../environments/environment';
 
 import { UserService } from './user.service';
 
+import { HttpClientModule } from '@angular/common/http'; 
+import { CallNumber } from '@ionic-native/call-number/ngx';
+
 //* firebase core
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
@@ -35,13 +38,15 @@ import { AgmCoreModule } from '@agm/core';
     AgmCoreModule.forRoot({
       apiKey: environment.googleMapsKey
     }),
+    HttpClientModule
   ],
   providers: [
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     UserService,
-    Firebase
+    Firebase,
+    CallNumber
   ],
   bootstrap: [AppComponent]
 })

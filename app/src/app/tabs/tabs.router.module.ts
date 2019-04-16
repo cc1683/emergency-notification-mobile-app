@@ -11,6 +11,7 @@ const routes: Routes = [
       { path: 'link', loadChildren: '../link/link.module#LinkPageModule' },
       { path: 'profile', loadChildren: '../profile/profile.module#ProfilePageModule' },
       { path: 'chat', loadChildren: '../chat/chat.module#ChatPageModule' },
+      { path: 'tips', loadChildren: '../tips/tips.module#TipsPageModule' },
     ]
   }
 ];
