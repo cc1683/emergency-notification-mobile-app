@@ -21,10 +21,11 @@ export class RegisterPage implements OnInit {
               public alert: AlertController,
               public router: Router,
               public user: UserService
-              ) { }
+              ) 
+              { }
 
-  ngOnInit() {
-  }
+  ngOnInit() 
+  { }
 
   async register() {
     const { username, password, cpassword } = this;
@@ -69,6 +70,18 @@ export class RegisterPage implements OnInit {
 
   goLogin() {
     this.router.navigate(['/login']);
+  }
+
+  quickLogin() {
+    let user = this.afAuth.auth.currentUser
+    if(user) {
+      user.providerData.forEach(profile => {
+        console.log("  Provider-specific UID: " + profile.uid);
+      })
+      this.router.navigate(['/tabs']);
+    } else {
+      this.showAlert("Error!", "You must create an account first!");
+    }
   }
 
 }
