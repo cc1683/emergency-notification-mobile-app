@@ -11,6 +11,9 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AlertController } from '@ionic/angular';
 import * as firebase from 'firebase';
+import { BehaviorSubject } from 'rxjs';
+
+declare var google: any;
 
 @Component({
   selector: 'app-home',
@@ -32,6 +35,8 @@ export class HomePage implements OnInit {
 
   token: Array<string> = []
   tokenCollection: Array<string> = []
+
+  currentMessage = new BehaviorSubject(null)
 
 
   constructor(public afStore: AngularFirestore, 
@@ -74,12 +79,35 @@ export class HomePage implements OnInit {
       useLocale: true,
       maxResults: 1
     }
-
-    this.nativegeocoder.reverseGeocode(lat, lng, options)
+    if(this.platform.is("android")) {
+      this.nativegeocoder.reverseGeocode(lat, lng, options)
       .then((result: NativeGeocoderReverseResult[]) => 
         this.msg = (result[0]['subThoroughfare']+' '+result[0]['thoroughfare'])+' '+result[0]['postalCode']+' '+result[0]['locality']+' '+result[0]['administrativeArea']
       )
+    } else if(this.platform.is("desktop")) {
+      var geocoder = new google.maps.Geocoder;
+      var latlng = {lat: lat, lng: lng};
+      return new Promise(function(resolve, reject) {
+        geocoder.geocode({'location': latlng}, function(results, status) {
+          if (status === 'OK') {
+            if (results[0]) {
+              console.log(results[0].formatted_address);
+              this.msg = results[0].formatted_address
+              resolve(this.msg);
+            } else {
+              reject(window.alert('No results found'));
+            }
+          } else {
+            window.alert('Geocoder failed due to: ' + status);
+          }
+        });
+      }).then(result => {
+        this.msg = result
+      })
+    }
   }
+
+  
 
   // generateAddress(addressObj) {
   //   let obj = []
@@ -133,6 +161,7 @@ export class HomePage implements OnInit {
         receiver: lists
       })
       this.showAlert('Success', 'Message sent successfully!')
+      console.log(typeof this.msg)
       this.tokenCollection.length = 0;
       return;
     }
@@ -162,8 +191,18 @@ export class HomePage implements OnInit {
       })
       messaging.onMessage(payload => {
         console.log('onMessage', payload);
+        this.currentMessage.next(payload);
         this.showAlert(payload.notification['title'], payload.notification['body']);
       })
+
+      // messaging.setBackgroundMessageHandler(payload => {
+      //   console.log('[firebase-messaging-sw.js] Received background message ', payload);
+      //   var notificationTitle = payload.notification['title']
+      //   var notificationOptions = {
+      //     body: payload.notification['body'],
+      //     icon: 'http://icons.iconarchive.com/icons/iconshock/real-vista-medical/256/emergency-icon.png'
+      //   }
+      // })
     } else {
       this.platform.is("android") ? this.initializeFirebaseAndroid() : this.initializeFirebaseIOS()
     }
@@ -203,9 +242,9 @@ export class HomePage implements OnInit {
     });
   }
 
-  async showToast(msg: string) {
+  async showToast(toastmsg: string) {
     let toast = await this.toastCtrl.create({
-      message: msg,
+      message: toastmsg,
       duration: 3000
     });
     await toast.present();
