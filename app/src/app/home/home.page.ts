@@ -10,6 +10,7 @@ import { firestore } from 'firebase';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AlertController } from '@ionic/angular';
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'app-home',
@@ -38,7 +39,7 @@ export class HomePage implements OnInit {
               public user: UserService, 
               public geolocation: Geolocation,
               public nativegeocoder: NativeGeocoder,
-              private firebase: Firebase,
+              private firebaseNative: Firebase,
               public toastCtrl: ToastController,
               private platform: Platform,
               public alert: AlertController
@@ -149,33 +150,49 @@ export class HomePage implements OnInit {
   }
 
   getToken() {
-    this.platform.is("android") ? this.initializeFirebaseAndroid() : this.initializeFirebaseIOS()
+    if(this.platform.is("desktop")) {
+      const messaging = firebase.messaging();
+      messaging.requestPermission().then(() => {
+        return messaging.getToken();
+      }).then(token => {
+        console.log(token);
+        this.afStore.doc(`users/${this.user.getUid()}`).update({
+          token: token
+        })
+      })
+      messaging.onMessage(payload => {
+        console.log('onMessage', payload);
+        this.showAlert(payload.notification['title'], payload.notification['body']);
+      })
+    } else {
+      this.platform.is("android") ? this.initializeFirebaseAndroid() : this.initializeFirebaseIOS()
+    }
   }
 
   initializeFirebaseAndroid() {
-    this.firebase.getToken().then(token => {
+    this.firebaseNative.getToken().then(token => {
       this.afStore.doc(`users/${this.user.getUid()}`).update({
         token: token
       })
     });
-    this.firebase.onTokenRefresh().subscribe(token => {})
+    this.firebaseNative.onTokenRefresh().subscribe(token => {})
     this.subscribeToPushNotifications();
   }
 
   initializeFirebaseIOS() {
-    this.firebase.grantPermission()
+    this.firebaseNative.grantPermission()
     .then(() => {
-      this.firebase.getToken().then(token => {});
-      this.firebase.onTokenRefresh().subscribe(token => {})
+      this.firebaseNative.getToken().then(token => {});
+      this.firebaseNative.onTokenRefresh().subscribe(token => {})
       this.subscribeToPushNotifications();
     })
     .catch((error) => {
-      this.firebase.logError(error);
+      this.firebaseNative.logError(error);
     });
   }
 
   subscribeToPushNotifications() {
-    this.firebase.onNotificationOpen().subscribe((response) => {
+    this.firebaseNative.onNotificationOpen().subscribe((response) => {
       if(response.tap){
         //Received while app in background (this should be the callback when a system notification is tapped)
         //This is empty for our app since we just needed the notification to open the app
